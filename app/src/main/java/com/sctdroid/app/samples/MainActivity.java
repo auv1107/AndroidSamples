@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
 
     private FrameLayout mContainer;
 
+    private boolean mIsRecording = false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,8 +98,27 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_settings: {
                 break;
             }
+            case R.id.action_record: {
+                if (mIsRecording) {
+                    mIsRecording = false;
+                    item.setIcon(R.drawable.ic_play_arrow_black_24dp);
+                    stopRecord();
+                } else {
+                    mIsRecording = true;
+                    item.setIcon(R.drawable.ic_stop_black_24dp);
+                    startRecord();
+                }
+            }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void stopRecord() {
+
+    }
+
+    private void startRecord() {
+
     }
 
     @Override
