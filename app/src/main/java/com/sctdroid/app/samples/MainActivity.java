@@ -4,10 +4,14 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
@@ -50,12 +54,20 @@ public class MainActivity extends AppCompatActivity {
         mNavigationView = ButterKnife.findById(this, R.id.nav_view);
         mDrawerLayout = ButterKnife.findById(this, R.id.drawer_layout);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.setDrawerListener(toggle);
+        toggle.syncState();
 
         // Set behavior of Navigation drawer
         mNavigationView.setNavigationItemSelectedListener(
@@ -80,8 +92,29 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_layoutAnimation:
                 mNavigationController.navigateToLayoutAnimation();
                 break;
+            //noinspection SimplifiableIfStatement
+            case R.id.action_settings: {
+                break;
+            }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
 
 }
