@@ -1,5 +1,5 @@
 # AndroidSamples
-![Gist 碎片](https://gist.github.com/auv1107/0da0fd4f934cf8a554e76eecb246937f)
+文档：[Gist 碎片](https://gist.github.com/auv1107/0da0fd4f934cf8a554e76eecb246937f)
 
 这个项目来源于 Android 学习中的几个痛点，  
 一个是学习新的 feature 时，总是需要通过新建项目进行实践。  
