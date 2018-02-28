@@ -1,9 +1,12 @@
 package com.sctdroid.app.samples;
 
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -13,11 +16,20 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 
+import com.sctdroid.app.samples.common.ExecutorThread;
+import com.sctdroid.app.samples.common.FileUtils;
+import com.sctdroid.app.samples.common.Result;
+import com.sctdroid.app.samples.common.ViewRecorder;
 import com.sctdroid.app.samples.modules.BaseFragment;
+import com.sctdroid.app.samples.thirdParty.GifUtils;
+
+import java.io.File;
 
 import butterknife.ButterKnife;
+import cn.dxjia.ffmpeg.library.FFmpegNativeHelper;
 
 /**
  * Created by lixindong on 2018/2/26.
@@ -37,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout mContainer;
 
     private boolean mIsRecording = false;
+    private ViewRecorder mRecorder;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,11 +127,41 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void stopRecord() {
-
+        /*String input = Environment.getExternalStorageDirectory() + "/j%d.jpg";
+        String output = Environment.getExternalStorageDirectory() + "/video.gif";
+        GifUtils.GifByFFmpge(input, output, new Result() {
+            @Override
+            public void onResult(RESULT result) {
+                Snackbar.make(mContainer, "" + result, Snackbar.LENGTH_LONG).show();
+            }
+        });*/
+        mRecorder.stopRecord();
     }
 
     private void startRecord() {
+        mRecorder = new ViewRecorder(mContainer, 1, Environment.getExternalStorageDirectory() + "/record.gif", new ViewRecorder.Listener() {
+            @Override
+            public void onFrame(final Bitmap bitmap, final int currentFrame) {
+            }
 
+            @Override
+            public void onMergeStart() {
+                showLoading("正在合成");
+            }
+
+            @Override
+            public void onMergeFinish(String path) {
+                hideLoading();
+                final Snackbar snackbar = Snackbar.make(mContainer, "已保存至: " + path, Snackbar.LENGTH_LONG);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                }).show();
+            }
+        });
+        mRecorder.startRecord();
     }
 
     @Override
@@ -138,4 +181,17 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    public void showLoading(String msg) {
+        if (mProgressDialog == null) {
+            mProgressDialog = ProgressDialog.show(this, "", msg, true, false);
+        } else if (!mProgressDialog.isShowing()){
+            mProgressDialog.show();
+        }
+    }
+
+    public void hideLoading() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
+    }
 }
