@@ -1,14 +1,11 @@
 package com.sctdroid.app.samples.common;
 
 import android.graphics.Bitmap;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
-
-import com.sctdroid.app.samples.thirdParty.GifUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,13 +31,15 @@ public class ViewRecorder {
     private String mOutput;
 
     private int mCurrentFrame;
-    private List<String> mFrameList = new ArrayList<>();
+    private List<File> mFrameList = new ArrayList<>();
 
     private boolean mIsRecording = false;
 
+    GifClient mGifClient;
+
     private ExecutorService mExecutor = Executors.newSingleThreadExecutor();
 
-    public ViewRecorder(@NonNull View view, int rate, String output, Listener listener) {
+    public ViewRecorder(@NonNull View view, GifClient client, int rate, String output, Listener listener) {
         mTimer = new Timer();
         mHandler = new Handler(Looper.getMainLooper());
         mCurrentFrame = 0;
@@ -48,6 +47,7 @@ public class ViewRecorder {
         mRate = rate;
         mListener = listener;
         mOutput = output;
+        mGifClient = client;
     }
 
     public void startRecord() {
@@ -75,8 +75,14 @@ public class ViewRecorder {
             public void run() {
                 mTimer.cancel();
                 mTimer.purge();
-                boolean success = GifUtils.GifByFFmpge(mView.getContext().getCacheDir() + FILE_FORMAT, mOutput);
-                postMergeFinish(mOutput);
+//                boolean success = GifUtils.GifByFFmpge(mView.getContext().getCacheDir() + "/" + FILE_FORMAT, mOutput);
+                Result.RESULT result = mGifClient.newGifFromFiles(mFrameList, mOutput);
+                if (result == Result.RESULT.OK) {
+                    postMergeFinish(mOutput);
+                } else {
+                    // post error here
+                    postMergeFinish("error");
+                }
             }
         });
 
@@ -134,7 +140,7 @@ public class ViewRecorder {
                 File f = FileUtils.saveBitmap(bitmap, filename(frame));
                 bitmap.recycle();
                 if (f != null) {
-                    mFrameList.add(f.getPath());
+                    mFrameList.add(f);
                 }
             }
         });

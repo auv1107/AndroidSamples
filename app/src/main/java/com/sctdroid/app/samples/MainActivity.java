@@ -25,6 +25,7 @@ import com.sctdroid.app.samples.common.Result;
 import com.sctdroid.app.samples.common.ViewRecorder;
 import com.sctdroid.app.samples.modules.BaseFragment;
 import com.sctdroid.app.samples.thirdParty.GifUtils;
+import com.sctdroid.app.samples.thirdParty.GifflenClient;
 
 import java.io.File;
 
@@ -139,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startRecord() {
-        mRecorder = new ViewRecorder(mContainer, 1, Environment.getExternalStorageDirectory() + "/record.gif", new ViewRecorder.Listener() {
+        mRecorder = new ViewRecorder(mContainer, new GifflenClient(), 1, Environment.getExternalStorageDirectory() + "/record.gif", new ViewRecorder.Listener() {
             @Override
             public void onFrame(final Bitmap bitmap, final int currentFrame) {
             }
