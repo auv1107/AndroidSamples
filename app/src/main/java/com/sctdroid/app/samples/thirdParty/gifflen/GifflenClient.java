@@ -1,7 +1,9 @@
-package com.sctdroid.app.samples.thirdParty;
+package com.sctdroid.app.samples.thirdParty.gifflen;
+
+import android.graphics.BitmapFactory;
 
 import com.lchad.gifflen.Gifflen;
-import com.sctdroid.app.samples.common.GifClient;
+import com.sctdroid.app.samples.common.viewRecorder.GifClient;
 import com.sctdroid.app.samples.common.Result;
 
 import java.io.File;
@@ -26,17 +28,21 @@ public class GifflenClient implements GifClient {
     }
 
     @Override
-    public Result.RESULT newGif(String input, String output) {
+    public Result.RESULT newGif(String input, String target) {
         return null;
     }
 
     @Override
-    public void newGif(String input, String output, Result result) {
+    public void newGif(String input, String target, Result result) {
     }
 
     @Override
-    public Result.RESULT newGifFromFiles(List<File> input, String output) {
-        boolean success = mGifflen.encode(output, input);
+    public Result.RESULT newGifFromFiles(List<File> input, String target) {
+        File file = input.get(0);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(file.getPath(), options);
+        boolean success = mGifflen.encode(options.outWidth, options.outHeight, target, input);
         return success ? Result.RESULT.OK : Result.RESULT.ERROR;
     }
 }

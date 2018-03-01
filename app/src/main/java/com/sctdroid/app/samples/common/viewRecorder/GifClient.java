@@ -1,4 +1,6 @@
-package com.sctdroid.app.samples.common;
+package com.sctdroid.app.samples.common.viewRecorder;
+
+import com.sctdroid.app.samples.common.Result;
 
 import java.io.File;
 import java.util.List;

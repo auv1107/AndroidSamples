@@ -3,6 +3,7 @@ package com.sctdroid.app.samples.common;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +14,10 @@ import android.view.View;
 
 public class BitmapUtils {
     public static Bitmap getViewBitmap(View v) {
+        return getViewBitmap(v, 1.0f);
+    }
+
+    public static Bitmap getViewBitmap(View v, float scale) {
         v.clearFocus();
         v.setPressed(false);
 
@@ -34,7 +39,11 @@ public class BitmapUtils {
             return null;
         }
 
-        Bitmap bitmap = Bitmap.createBitmap(cacheBitmap);
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale);
+        Bitmap bitmap = Bitmap.createBitmap(cacheBitmap, 0, 0,
+                cacheBitmap.getWidth(), cacheBitmap.getHeight(),
+                matrix, true);
         cacheBitmap.recycle();
 
         // Restore the view

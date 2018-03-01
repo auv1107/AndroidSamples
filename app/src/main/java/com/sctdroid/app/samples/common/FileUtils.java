@@ -23,6 +23,8 @@ public class FileUtils {
             File tempFile = File.createTempFile(prefix, ".png");
             OutputStream os = new FileOutputStream(tempFile);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
+            os.flush();
+            os.close();
 
             return tempFile;
         } catch (IOException e) {
