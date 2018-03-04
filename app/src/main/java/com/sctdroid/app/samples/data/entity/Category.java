@@ -5,6 +5,9 @@ import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import com.sctdroid.app.samples.common.Encryption;
+
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 /**
@@ -18,5 +21,17 @@ public class Category {
 
     public String name;
 
-    public Date date;
+    public Date createdAt;
+
+    public Category() {
+        try {
+            id = Encryption.md5(toString());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            id = "" + System.currentTimeMillis() + (int) (Math.random() * 1024);
+        }
+
+        createdAt = new Date();
+    }
+
 }

@@ -3,6 +3,7 @@ package com.sctdroid.app.samples.data.dao;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
 import com.sctdroid.app.samples.data.entity.Category;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @Dao
 public interface CategoryDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Category category);
 
     @Insert

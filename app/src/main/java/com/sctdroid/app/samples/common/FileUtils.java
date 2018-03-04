@@ -49,4 +49,13 @@ public class FileUtils {
         }
         return null;
     }
+
+    public static boolean ensureFolder(String path) {
+        File file = new File(path);
+        boolean result = true;
+        if (!file.exists()) {
+            result = file.mkdirs();
+        }
+        return result;
+    }
 }

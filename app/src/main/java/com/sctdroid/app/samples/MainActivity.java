@@ -3,7 +3,6 @@ package com.sctdroid.app.samples;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -19,6 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.sctdroid.app.samples.business.AppDatabase;
+import com.sctdroid.app.samples.business.AppFolder;
 import com.sctdroid.app.samples.common.viewRecorder.ViewRecorder;
 import com.sctdroid.app.samples.modules.BaseFragment;
 import com.sctdroid.app.samples.thirdParty.gifflen.GifflenClient;
@@ -131,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                 .useGifClient(new GifflenClient())
                 .rate(15)
                 .scale(0.5f)
-                .to(Environment.getExternalStorageDirectory() + "/record.gif")
+                .to(AppFolder.getFolder(this, AppFolder.FOLDER_GALLERY) + "/" + System.currentTimeMillis() + ".gif")
                 .listener(new ViewRecorder.Listener() {
                     @Override
                     public void onFrame(final Bitmap bitmap, final int currentFrame) {
@@ -152,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
                                 snackbar.dismiss();
                             }
                         }).show();
+                        AppDatabase.addGifAsync(path);
                     }
 
                     @Override
