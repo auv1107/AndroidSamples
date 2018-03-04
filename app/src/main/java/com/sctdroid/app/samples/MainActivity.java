@@ -22,6 +22,7 @@ import com.sctdroid.app.samples.business.AppDatabase;
 import com.sctdroid.app.samples.business.AppFolder;
 import com.sctdroid.app.samples.common.viewRecorder.ViewRecorder;
 import com.sctdroid.app.samples.modules.BaseFragment;
+import com.sctdroid.app.samples.modules.gallery.GalleryActivity;
 import com.sctdroid.app.samples.thirdParty.gifflen.GifflenClient;
 import com.sctdroid.app.samples.thirdParty.gifflen.TmpFileFrameCache;
 
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mNavigationController = new NavigationController(this);
+        mNavigationController = new NavigationController(this, R.id.container);
         mFragment = mNavigationController.navigateToLayoutAnimation();
         mContainer = ButterKnife.findById(this, R.id.container);
 
@@ -117,6 +118,11 @@ public class MainActivity extends AppCompatActivity {
                     item.setIcon(R.drawable.ic_stop_black_24dp);
                     startRecord();
                 }
+                break;
+            }
+            case R.id.action_gallery: {
+                GalleryActivity.start(this);
+                break;
             }
         }
         return super.onOptionsItemSelected(item);

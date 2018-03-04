@@ -2,6 +2,7 @@ package com.sctdroid.app.samples;
 
 import android.app.Application;
 
+import com.facebook.stetho.Stetho;
 import com.sctdroid.app.samples.business.AppDatabase;
 import com.sctdroid.app.samples.business.AppFolder;
 import com.sctdroid.app.samples.data.DB;
@@ -22,5 +23,6 @@ public class App extends Application {
         DB.init(this);
         AppDatabase.ensureUnspecifiedCategory();
         AppFolder.initAppFolders(this);
+        Stetho.initializeWithDefaults(this);
     }
 }

@@ -7,6 +7,12 @@
         android:title="@string/action_settings"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_gallery"
+        android:title="@string/action_gallery"
+        app:showAsAction="never"
+        />
+
     <item android:id="@+id/action_record"
         android:title="@string/action_record"
         android:icon="@drawable/ic_play_arrow_black_24dp"

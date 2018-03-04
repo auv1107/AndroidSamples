@@ -28,9 +28,9 @@ public interface CategoryDao {
     @Delete
     void deleteAll(Category... categories);
 
-    @Query("select * from Category")
+    @Query("select * from Category order by createdAt desc")
     List<Category> getAll();
 
-    @Query("select * from Category where id in (:ids)")
+    @Query("select * from Category where id in (:ids) order by createdAt desc")
     List<Category> getAllByIds(String[] ids);
 }

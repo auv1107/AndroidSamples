@@ -55,4 +55,6 @@ dependencies {
     testAnnotationProcessor "android.arch.persistence.room:compiler:1.0.0"
     // Paging
     implementation 'android.arch.paging:runtime:1.0.0-alpha5'
+    // sqlite inspect with chrome
+    implementation 'com.facebook.stetho:stetho:1.5.0'
 }

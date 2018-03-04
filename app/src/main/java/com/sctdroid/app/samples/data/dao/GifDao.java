@@ -16,20 +16,23 @@ import java.util.List;
 
 @Dao
 public interface GifDao {
-    @Query("select * from gif")
+    @Query("select * from gif order by createdAt desc")
     List<Gif> getGifs();
 
-    @Query("select * from gif where id in (:ids)")
+    @Query("select * from gif where id in (:ids) order by createdAt desc")
     List<Gif> loadAllByIds(String[] ids);
 
-    @Query("select * from gif where categoryId like :categoryId")
+    @Query("select * from gif where categoryId like :categoryId order by createdAt desc")
     List<Gif> loadAllByCategory(String categoryId);
 
-    @Query("select * from gif where categoryId like :categoryId limit 1")
+    @Query("select * from gif where categoryId like :categoryId order by createdAt desc limit 1")
     Gif findFirst(String categoryId);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(Gif... gifs);
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    void insert(Gif gif);
 
     @Delete
     void delete(Gif gif);
