@@ -9,7 +9,7 @@ import com.sctdroid.app.samples.data.dao.GifDao;
 import com.sctdroid.app.samples.data.entity.Category;
 import com.sctdroid.app.samples.data.entity.Gif;
 
-@Database(entities = {Category.class, Gif.class}, version = 1)
+@Database(entities = {Category.class, Gif.class}, version = 1, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     public abstract CategoryDao categoryDao();

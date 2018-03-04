@@ -18,12 +18,18 @@ public interface CategoryDao {
     @Insert
     void insert(Category category);
 
+    @Insert
+    void insertAll(Category... category);
+
     @Delete
     void delete(Category category);
+
+    @Delete
+    void deleteAll(Category... categories);
 
     @Query("select * from Category")
     List<Category> getAll();
 
-    @Query("select * from Category where id (:ids)")
+    @Query("select * from Category where id in (:ids)")
     List<Category> getAllByIds(String[] ids);
 }

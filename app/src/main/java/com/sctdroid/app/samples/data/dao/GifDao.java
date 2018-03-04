@@ -33,4 +33,7 @@ public interface GifDao {
 
     @Delete
     void delete(Gif gif);
+
+    @Delete
+    void deleteAll(Gif... gifs);
 }

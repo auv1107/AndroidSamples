@@ -1,7 +1,9 @@
 package com.sctdroid.app.samples.data.entity;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 import java.util.Date;
 
@@ -9,12 +11,12 @@ import java.util.Date;
  * Created by lixindong on 2018/3/2.
  */
 
-@Entity
+@Entity(indices = {@Index("id")})
 public class Category {
     @PrimaryKey
-    String id;
+    public @NonNull String id;
 
-    String name;
+    public String name;
 
-    Date date;
+    public Date date;
 }
