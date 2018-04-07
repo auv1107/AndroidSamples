@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
             case R.id.action_gallery: {
-                GalleryActivity.start(this);
+                GalleryActivity.Companion.start(this);
                 break;
             }
         }
