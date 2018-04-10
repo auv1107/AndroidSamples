@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.sctdroid.app.samples.modules.BaseFragment;
 import com.sctdroid.app.samples.modules.gallery.GalleryFragment;
 import com.sctdroid.app.samples.modules.layoutAnimation.LayoutAnimationFragment;
+import com.sctdroid.app.samples.modules.sectionlist.SectionListFragment;
 
 
 public class NavigationController {
@@ -29,6 +30,14 @@ public class NavigationController {
 
     public BaseFragment navigateToGallery() {
         GalleryFragment fragment = new GalleryFragment();
+        fragmentManager.beginTransaction()
+                .replace(containerId, fragment)
+                .commitAllowingStateLoss();
+
+        return fragment;
+    }
+    public BaseFragment navigateToSectionList() {
+        SectionListFragment fragment = new SectionListFragment();
         fragmentManager.beginTransaction()
                 .replace(containerId, fragment)
                 .commitAllowingStateLoss();

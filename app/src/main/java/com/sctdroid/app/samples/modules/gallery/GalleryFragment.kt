@@ -34,11 +34,11 @@ class GalleryFragment : BaseFragment() {
         return R.layout.fragment_gallery
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(layoutId, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(layoutId, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onViewBound()
     }
@@ -97,7 +97,7 @@ class GalleryFragment : BaseFragment() {
     }
 
     private fun notifyGifUpdated(gifs: List<Gif>) {
-        activity.runOnUiThread { mAdapter!!.updateData(gifs) }
+        activity!!.runOnUiThread { mAdapter!!.updateData(gifs) }
     }
 
     internal class ViewHolder(inflater: LayoutInflater, parent: ViewGroup) : RecyclerView.ViewHolder(inflater.inflate(R.layout.item_picture, parent, false)) {

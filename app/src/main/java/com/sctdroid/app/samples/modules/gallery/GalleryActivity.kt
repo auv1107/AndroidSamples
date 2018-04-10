@@ -24,7 +24,7 @@ class GalleryActivity : AppCompatActivity() {
         setContentView(R.layout.activity_gallery)
 
         mNavigationController = NavigationController(this, R.id.container)
-        mFragment = mNavigationController!!.navigateToGallery()
+        mFragment = mNavigationController!!.navigateToSectionList()
 
     }
 
