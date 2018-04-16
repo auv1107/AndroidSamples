@@ -84,8 +84,32 @@ class GalleryFragment : BaseFragment() {
         val recyclerView = view.recyclerView
         mAdapter = ContentAdapter()
         recyclerView.adapter = mAdapter
-        recyclerView.layoutManager = GridLayoutManager(context, 2)
+        val glm = GridLayoutManager(context, 4)
+        glm.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return if (position % 6 == 0) {
+                    4
+                } else {
+                    1
+                }
+            }
+        }
+        recyclerView.layoutManager = glm
         recyclerView.itemAnimator = DefaultItemAnimator()
+        recyclerView.addItemDecoration(object :GridDecoration(context, 8) {
+            override fun getItemSidesIsHaveOffsets(itemPosition: Int): BooleanArray {
+                val booleans = booleanArrayOf(true, true, true, true)
+                val positionWithoutHeader = itemPosition - (itemPosition / 6 + 1)
+                if (itemPosition % 6 != 0) {
+                    when {
+                        positionWithoutHeader % 4 == 0 -> booleans[0] = false
+                        positionWithoutHeader < 4 -> booleans[1] = false
+                        positionWithoutHeader % 4 == 3 -> booleans[2] = false
+                    }
+                }
+                return booleans
+            }
+        })
         loadAllGifs()
     }
 
@@ -100,7 +124,10 @@ class GalleryFragment : BaseFragment() {
         activity.runOnUiThread { mAdapter!!.updateData(gifs) }
     }
 
-    internal class ViewHolder(inflater: LayoutInflater, parent: ViewGroup) : RecyclerView.ViewHolder(inflater.inflate(R.layout.item_picture, parent, false)) {
+    open class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    }
+
+    internal class ItemViewHolder(inflater: LayoutInflater, parent: ViewGroup) : ViewHolder(inflater.inflate(R.layout.item_picture, parent, false)) {
 
         private val mImageView: ShapedImageView
 
@@ -116,17 +143,36 @@ class GalleryFragment : BaseFragment() {
                     .into(mImageView)
         }
     }
+    internal class HeaderViewHolder(inflater: LayoutInflater, parent: ViewGroup) : ViewHolder(inflater.inflate(R.layout.item_header, parent, false)) {
+
+        init {
+        }
+    }
 
     internal class ContentAdapter : RecyclerView.Adapter<ViewHolder>() {
 
         private val mData = ArrayList<Gif>()
 
+        private val VIEW_TYPE_HEADER = 0
+        private val VIEW_TYPE_ITEM = 1
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(LayoutInflater.from(parent.context), parent)
+            when (viewType) {
+                VIEW_TYPE_ITEM -> return ItemViewHolder(LayoutInflater.from(parent.context), parent)
+                VIEW_TYPE_HEADER -> return HeaderViewHolder(LayoutInflater.from(parent.context), parent)
+            }
+            return ItemViewHolder(LayoutInflater.from(parent.context), parent)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.bind(getItem(position))
+            if (holder is ItemViewHolder) {
+                holder.bind(getItem(position))
+            }
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return if (position % 6 == 0) VIEW_TYPE_HEADER
+            else VIEW_TYPE_ITEM
         }
 
         override fun getItemCount(): Int {
