@@ -13,6 +13,8 @@ import com.bumptech.glide.Glide
 import com.sctdroid.app.samples.R
 import com.sctdroid.app.samples.business.AppDatabase
 import com.sctdroid.app.samples.common.ExecutorThread
+import com.sctdroid.app.samples.common.LinkedSection
+import com.sctdroid.app.samples.common.LinkedSection.SectionIncludeEntrySet
 import com.sctdroid.app.samples.data.entity.Gif
 import com.sctdroid.app.samples.modules.BaseFragment
 import com.sctdroid.app.samples.widget.ShapedImageView
@@ -84,8 +86,33 @@ class GalleryFragment : BaseFragment() {
         val recyclerView = view.recyclerView
         mAdapter = ContentAdapter()
         recyclerView.adapter = mAdapter
-        recyclerView.layoutManager = GridLayoutManager(context, 2)
+        val spanCount = 4
+        val glm = GridLayoutManager(context, spanCount)
+        glm.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                if (recyclerView.adapter is ContentAdapter) {
+                    val entry = (recyclerView.adapter as ContentAdapter).getItem(position)
+                    if (entry.isHeader) return spanCount
+                }
+                return 1
+            }
+        }
+        recyclerView.layoutManager = glm
         recyclerView.itemAnimator = DefaultItemAnimator()
+        recyclerView.addItemDecoration(object :GridDecoration(context, 8) {
+            override fun getItemSidesIsHaveOffsets(itemPosition: Int): BooleanArray {
+                val booleans = booleanArrayOf(true, true, true, true)
+                val positionWithoutHeader = itemPosition - (itemPosition / 6 + 1)
+                if (itemPosition % 6 != 0) {
+                    when {
+                        positionWithoutHeader % 4 == 0 -> booleans[0] = false
+                        positionWithoutHeader < 4 -> booleans[1] = false
+                        positionWithoutHeader % 4 == 3 -> booleans[2] = false
+                    }
+                }
+                return booleans
+            }
+        })
         loadAllGifs()
     }
 
@@ -97,10 +124,30 @@ class GalleryFragment : BaseFragment() {
     }
 
     private fun notifyGifUpdated(gifs: List<Gif>) {
-        activity.runOnUiThread { mAdapter!!.updateData(gifs) }
+        activity.runOnUiThread { mAdapter!!.updateData(buildLinkedSection(gifs)) }
     }
 
-    internal class ViewHolder(inflater: LayoutInflater, parent: ViewGroup) : RecyclerView.ViewHolder(inflater.inflate(R.layout.item_picture, parent, false)) {
+    private fun buildLinkedSection(gifs: List<Gif>): LinkedSection<String, Gif> {
+        val table = LinkedSection<String, Gif>()
+        for (gif in gifs) {
+            table.add("Section1", gif)
+        }
+        for (gif in gifs) {
+            table.add("Section2", gif)
+        }
+        for (gif in gifs) {
+            table.add("Section3", gif)
+        }
+        for (gif in gifs) {
+            table.add("Section4", gif)
+        }
+        return table
+    }
+
+    open class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    }
+
+    internal class ItemViewHolder(inflater: LayoutInflater, parent: ViewGroup) : ViewHolder(inflater.inflate(R.layout.item_picture, parent, false)) {
 
         private val mImageView: ShapedImageView
 
@@ -116,32 +163,47 @@ class GalleryFragment : BaseFragment() {
                     .into(mImageView)
         }
     }
+    internal class HeaderViewHolder(inflater: LayoutInflater, parent: ViewGroup) : ViewHolder(inflater.inflate(R.layout.item_header, parent, false)) {
+
+        init {
+        }
+    }
 
     internal class ContentAdapter : RecyclerView.Adapter<ViewHolder>() {
 
-        private val mData = ArrayList<Gif>()
+        private var mData = LinkedSection<String, Gif>()
+        val VIEW_TYPE_HEADER = 0
+        val VIEW_TYPE_ITEM = 1
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(LayoutInflater.from(parent.context), parent)
+            when (viewType) {
+                VIEW_TYPE_ITEM -> return ItemViewHolder(LayoutInflater.from(parent.context), parent)
+                VIEW_TYPE_HEADER -> return HeaderViewHolder(LayoutInflater.from(parent.context), parent)
+            }
+            return ItemViewHolder(LayoutInflater.from(parent.context), parent)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.bind(getItem(position))
+            if (holder is ItemViewHolder) {
+                holder.bind(getItem(position).getValue())
+            }
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return if (getItem(position).isHeader) VIEW_TYPE_HEADER
+            else VIEW_TYPE_ITEM
         }
 
         override fun getItemCount(): Int {
-            return mData.size
+            return mData.entrySet().size
         }
 
-        fun getItem(position: Int): Gif {
-            return mData[position]
+        fun getItem(position: Int): LinkedSection.LinkedSectionEntry {
+            return mData.entrySet().get(position)
         }
 
-        fun updateData(data: List<Gif>?) {
-            mData.clear()
-            if (data != null) {
-                mData.addAll(data)
-            }
+        fun updateData(data: LinkedSection<String, Gif>) {
+            mData = data
             notifyDataSetChanged()
         }
     }
