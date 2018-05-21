@@ -1,6 +1,7 @@
 package com.sctdroid.app.samples;
 
 import android.support.annotation.IdRes;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
@@ -36,4 +37,10 @@ public class NavigationController {
         return fragment;
     }
 
+    public Fragment navigateToFragment(Fragment fragment) {
+        fragmentManager.beginTransaction()
+                .replace(containerId, fragment)
+                .commitAllowingStateLoss();
+        return fragment;
+    }
 }

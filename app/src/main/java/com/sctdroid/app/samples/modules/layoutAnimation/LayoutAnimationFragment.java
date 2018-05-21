@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.sctdroid.app.samples.R;
+import com.sctdroid.app.samples.annotations.FragmentMenuItem;
 import com.sctdroid.app.samples.modules.BaseFragment;
 
 import butterknife.BindView;
@@ -14,6 +15,7 @@ import butterknife.BindView;
  * Created by lixindong on 2018/2/26.
  */
 
+@FragmentMenuItem(title = "布局动画", iconRes = R.drawable.ic_layers_black_24dp, checked = true, id = 1, groupId = 0)
 public class LayoutAnimationFragment extends BaseFragment {
 
     @BindView(R.id.recyclerView)

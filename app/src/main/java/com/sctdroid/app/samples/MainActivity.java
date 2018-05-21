@@ -18,11 +18,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.sctdroid.app.samples.annotations.Menus;
 import com.sctdroid.app.samples.business.AppDatabase;
 import com.sctdroid.app.samples.business.AppFolder;
+import com.sctdroid.app.samples.business.NavigationMenuHandler;
 import com.sctdroid.app.samples.common.viewRecorder.ViewRecorder;
 import com.sctdroid.app.samples.modules.BaseFragment;
 import com.sctdroid.app.samples.modules.gallery.GalleryActivity;
+import com.sctdroid.app.samples.modules.layoutAnimation.LayoutAnimationFragment;
 import com.sctdroid.app.samples.thirdParty.gifflen.GifflenClient;
 import com.sctdroid.app.samples.thirdParty.gifflen.TmpFileFrameCache;
 
@@ -32,8 +35,8 @@ import butterknife.ButterKnife;
  * Created by lixindong on 2018/2/26.
  */
 
+@Menus(fragments = {LayoutAnimationFragment.class})
 public class MainActivity extends AppCompatActivity {
-
 
     private NavigationController mNavigationController;
     private BaseFragment mFragment;
@@ -47,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean mIsRecording = false;
     private ViewRecorder mRecorder;
+    private Class[] mMenuFragments;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,6 +62,23 @@ public class MainActivity extends AppCompatActivity {
         mContainer = ButterKnife.findById(this, R.id.container);
 
         initDrawerLayout();
+
+        initMenus();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    private void initMenus() {
+        NavigationMenuHandler handler = new NavigationMenuHandler(mNavigationView, getClass(), (item, fragment) -> {
+            mNavigationController.navigateToFragment(fragment);
+            item.setChecked(true);
+            // Closing drawer on item click
+            mDrawerLayout.closeDrawers();
+        });
+        handler.handle();
     }
 
 
@@ -101,9 +122,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivity", "onOptionsItemSelected: " + item.getTitle());
 
         switch (item.getItemId()) {
-            case R.id.menu_layoutAnimation:
-                mNavigationController.navigateToLayoutAnimation();
-                break;
             //noinspection SimplifiableIfStatement
             case R.id.action_settings: {
                 break;
